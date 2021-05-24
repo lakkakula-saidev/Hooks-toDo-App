@@ -1,41 +1,49 @@
-import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
-import uniqid from 'uniqid'
-import { connect } from 'react-redux'
-import { addTodo } from '../store/actions'
+import React, { Component } from "react";
+import { Form } from "react-bootstrap";
+import uniqid from "uniqid";
+import { connect } from "react-redux";
+import { addTodo } from "../store/actions";
 
-const mapDispatchToProps = dispatch => ({
-    addTodo: todo => dispatch(addTodo(todo))
-})
+const mapDispatchToProps = (dispatch) => ({
+  addTodo: (todo) => dispatch(addTodo(todo))
+});
 
 class InputForm extends Component {
+  state = {
+    description: ""
+  };
 
-    state = {
-        description: ''
-    }
+  handleChange = (event) => {
+    this.setState({ description: event.target.value });
+  };
 
-    handleChange = (event) => {
-        this.setState({ description: event.target.value })
-    }
+  handleSubmit = (event) => {
+    event.preventDefault();
 
-    handleSubmit = (event) => {
-        event.preventDefault()
-        this.props.addTodo({
-            description: this.state.description,
-            id: uniqid()
-        })
-        this.setState({ description: '' })
-    }
+    const todo = {
+      description: this.state.description,
+      id: uniqid(),
+      completed: false
+    };
 
-    render() {
-        return (
-            <Form onSubmit={this.handleSubmit}>
-                <Form.Control type="text" placeholder="New task..." value={this.state.description} onChange={this.handleChange} />
-                <Form.Control type="submit" />
-            </Form>
-        )
-    }
+    console.log(todo);
+    this.props.addTodo(todo);
+    this.setState({ description: "" });
+  };
+
+  render() {
+    return (
+      <Form onSubmit={this.handleSubmit}>
+        <Form.Control
+          type="text"
+          placeholder="New task..."
+          value={this.state.description}
+          onChange={this.handleChange}
+        />
+        <Form.Control type="submit" />
+      </Form>
+    );
+  }
 }
 
-
-export default connect(s => s, mapDispatchToProps)(InputForm)
+export default connect((s) => s, mapDispatchToProps)(InputForm);

@@ -1,30 +1,32 @@
-import { ADD_TODO, TOGGLE_COMPLETED } from '../actions/types'
+import { ADD_TODO, TOGGLE_COMPLETED, RESET } from "../actions/types";
 
 const initialState = {
-    list: []
-}
+  list: []
+};
 
 export default function rootReducer(state = initialState, action) {
+  const { type, payload } = action;
 
-    const { type, payload } = action
+  switch (type) {
+    case ADD_TODO:
+      return {
+        ...state,
+        list: [...state.list, payload]
+      };
+    case TOGGLE_COMPLETED:
+      return {
+        ...state,
+        list: state.list.map((todo) => {
+          if (todo.id === payload.id) {
+            todo.completed = !payload.completed;
+          }
 
-    switch (type) {
-        case ADD_TODO:
-            return {
-                ...state,
-                list: [...state.list, payload]
-            }
-        case TOGGLE_COMPLETED:
-            return {
-                ...state,
-                list: state.list.map(todo => {
-                    if (todo.id === payload.id) {
-                        todo.completed = !Boolean(payload.completed)
-                    }
-                    return todo
-                })
-            }
-        default: return state
-    }
-
+          return todo;
+        })
+      };
+    case RESET:
+      return initialState;
+    default:
+      return state;
+  }
 }
