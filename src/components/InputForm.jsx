@@ -1,49 +1,44 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import uniqid from "uniqid";
 import { connect } from "react-redux";
 import { addTodo } from "../store/actions";
+import { useDispatch, useSelector } from "react-redux";
 
-const mapDispatchToProps = (dispatch) => ({
-  addTodo: (todo) => dispatch(addTodo(todo))
+/* const mapDispatchToProps = (dispatch) => ({
+    addTodo: (todo) => dispatch(addTodo(todo))
 });
+ */
+const InputForm = () => {
+    const [description, setDescription] = useState("");
 
-class InputForm extends Component {
-  state = {
-    description: ""
-  };
+    const state = useSelector((state) => state);
+    const dispatch = useDispatch();
 
-  handleChange = (event) => {
-    this.setState({ description: event.target.value });
-  };
+    /*     handleChange = (event) => {
+        this.setState({ description: event.target.value });
+    }; */
 
-  handleSubmit = (event) => {
-    event.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
-    const todo = {
-      description: this.state.description,
-      id: uniqid(),
-      completed: false
+        const todo = {
+            description: description,
+            id: uniqid(),
+            completed: false
+        };
+
+        console.log(todo);
+        dispatch(addTodo(todo));
+        setDescription("");
     };
 
-    console.log(todo);
-    this.props.addTodo(todo);
-    this.setState({ description: "" });
-  };
-
-  render() {
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Control
-          type="text"
-          placeholder="New task..."
-          value={this.state.description}
-          onChange={this.handleChange}
-        />
-        <Form.Control type="submit" />
-      </Form>
+        <Form onSubmit={(e) => handleSubmit(e)}>
+            <Form.Control type="text" placeholder="New task..." value={description} onChange={(e) => setDescription(e.target.value)} />
+            <Form.Control type="submit" />
+        </Form>
     );
-  }
-}
+};
 
-export default connect((s) => s, mapDispatchToProps)(InputForm);
+export default InputForm;
